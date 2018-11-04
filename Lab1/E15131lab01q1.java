@@ -3,6 +3,7 @@
     Date: 10/10/2018
     Lab 01 | Task 01
 */
+
 import java.util.Scanner;
 
 public class E15131lab01q1 {
