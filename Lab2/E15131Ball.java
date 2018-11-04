@@ -3,6 +3,7 @@
     Date: 01/11/2018
     Lab 02 | behavior of a ball on a 2-D plane
 */
+
 public class E15131Ball {
     public static void main(String[] args) {
         Ball b1 = new Ball(0.0, 1.0, 10.0, 45.0);           //Creating object B1
