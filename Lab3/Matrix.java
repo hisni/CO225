@@ -33,9 +33,8 @@ public class Matrix extends Thread {
 			if( a[0].length != length ) { 
 				throw new IOException("Matrix could not multicable");
 			}
-
+			
 			int i, j, k; 
-
 			for( i=start; i < end; i++ ){ 
 				for( j=0; j < numColumn; j++ ) {
 					for( c[i][j] = 0, k=0; k<length; k++ ){ 
@@ -45,7 +44,7 @@ public class Matrix extends Thread {
 			}
 		}
 		catch(NullPointerException e){
-			System.out.println("Matrix limit exceed");
+			System.out.println("Matrix Limit Exceed");
 			System.exit(-1);
 		}catch(IOException e){
 			System.out.println(e);
