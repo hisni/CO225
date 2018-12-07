@@ -1,39 +1,47 @@
+/*
+    Author: Hisni Mohammed M.H.  (E/15/131)
+    Date: 07/12/2018
+    Lab 03 | Matrix multiplication using Java threads
+*/
 import java.io.*;
 import java.lang.*;
 
 public class Matrix extends Thread { 
 
-    private static int [][] a; 
+    private static int [][] a;
     private static int [][] b; 
-	protected static int [][] c; 
-	private static int numRow;
-	private static int numColumn;
-	private static int numThread;
-
-	private int start;
+	public static int [][] c;		//Resultant Matrix of A*B
+	private static int numRow;		//Number of rows in resultant matrix
+	private static int numColumn;	//Number of columns in resultant matrix
+	private static int length;		//Length for multiplication
+	private static int numThread;	//Threads Count
+	private int start;		//Starting and Ending row number for a particular thread to multiply
 	private int end;
-	
 		
-	public Matrix(int [][] m, int [][] n, int threadCount, int threadID ) {
+	public Matrix( int threadID ) {
+		start = (int)Math.floor( (threadID)*( (double)numRow/numThread ) );	//Determining rows to multiply in one thread.
+		end = (int)Math.floor( (threadID+1)*( (double)numRow/numThread ) );
+
+		if( threadID == numThread-1 ){		//In last thread making sure all rows are considered for multiply( Remaining rows are cosidered )
+			end = numRow;
+		}
+	}
+
+	public static void setThreadCount( int threadCount ) {	//Method to set Thread count
+		numThread = threadCount;
+	}
+
+	public static void initializeMatrices( int [][] m, int [][] n ){	//Method to set Matrices A,B and initialize Resultant Matrix
 		a = m;
 		b = n;
 		numRow = a.length;
 		numColumn = b[0].length;
-		numThread = threadCount;
+		length = b.length;
 		c = new int [ numRow ][ numColumn ];
-
-		start = (int)Math.floor( (threadID)*( (double)numRow/numThread ) );
-		end = (int)Math.floor( (threadID+1)*( (double)numRow/numThread ) );
-
 	}
-	
-	public void run(){
-		int length = b.length;
+
+	public void run(){		//Matrix Multiplication
 		try{
-			if( a[0].length != length ) { 
-				throw new IOException("Matrix could not multicable");
-			}
-			
 			int i, j, k; 
 			for( i=start; i < end; i++ ){ 
 				for( j=0; j < numColumn; j++ ) {
@@ -45,9 +53,6 @@ public class Matrix extends Thread {
 		}
 		catch(NullPointerException e){
 			System.out.println("Matrix Limit Exceed");
-			System.exit(-1);
-		}catch(IOException e){
-			System.out.println(e);
 			System.exit(-1);
 		}
 	}
