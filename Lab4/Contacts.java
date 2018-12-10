@@ -1,24 +1,15 @@
-class Contacts{
+public class Contacts{
     private String firstName;
     private String lastName;
     private String contactNo;
 
-    public Contacts( String firstN , String lastN, String number ) {
+    public Contacts( String firstN , String lastN, String number ) {        //Constructor
         firstName = firstN;
         lastName = lastN;
         contactNo = number;
     }
 
-    public String getFirstName(){
-        return firstName;
+    public void printContact(){     //Method to print all Contact details
+        System.out.println( firstName + " " + lastName + " : " + contactNo );
     }
-    
-    public String getLastName(){
-        return lastName;
-    }
-    
-    public String getNumber(){
-        return contactNo;
-    }
-
 }
