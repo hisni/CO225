@@ -7,7 +7,7 @@ import java.io.*;
 import java.util.*;
 
 public class Main{
-    private static Map<String, List<Contacts>> contactDetails = new HashMap< String, List<Contacts> >();    //HashMap to store all Contact Details
+    private static Map<String, Contacts> contactDetails = new HashMap< String, Contacts >();    //HashMap to store all Contact Details
     static int numberOfContacts=0;      //Number of contacts found after search
     static final int FirstNameID = 0;          //A unique ID for search Firstname
     static final int LastNameID = 1;           //A unique ID for search Lastname
@@ -58,14 +58,9 @@ public class Main{
                 fullName = firstName + " " + lastName;      //Combine firstname and lastname to get fullname, Fullname is used as key for hashmap
 
                 Contacts contact = new Contacts( firstName, lastName, contactNum ); //Create a Contact Object
-                List<Contacts> fullNameList = new ArrayList<Contacts>();    //List to store Contacts of same fullname
+                
+                contactDetails.put( fullName, contact);        //Create a key and object
 
-                if ( contactDetails.containsKey( fullName ) ) {
-                    contactDetails.get( fullName ).add( contact );      //If the key is already there,just add the next entry
-                } else {
-                    fullNameList.add( contact );
-                    contactDetails.put( fullName, fullNameList);        //Else create a new key and a list
-                }
             }
 
         } catch (FileNotFoundException e) {     //Exception Handling
@@ -85,16 +80,14 @@ public class Main{
 
     //Method to search First and Last names
     public static void searchContact( String searchName, int ID ) {
-        for( Map.Entry< String, List<Contacts> > entry : contactDetails.entrySet() ){
+        for( Map.Entry< String, Contacts > entry : contactDetails.entrySet() ){
             String key = entry.getKey();   
             String []name=key.split(" ");       //Split the key by space
             
             if( searchName.equalsIgnoreCase( name[ID] ) ){  //Check for search name after spliting( FirstNameID = 0 and LastNamesID = 1  )
-                List<Contacts> list = entry.getValue();     //If found get contact
-                for ( Contacts contact : list ) {
-                    contact.printContact();                 //Print contact details
-                    numberOfContacts++;
-                }
+                Contacts contact = entry.getValue();
+                contact.printContact();                 //Print contact details
+                numberOfContacts++;
             }
         }
         System.out.println( numberOfContacts + " Contacts found" );  //Print Number of contacts found
