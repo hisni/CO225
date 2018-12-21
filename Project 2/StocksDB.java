@@ -2,12 +2,12 @@ import java.io.*;
 import java.util.*;
 
 public class StocksDB{
-    public Map<String,StockInfo> stocksDetails = new HashMap<String, StockInfo>();
+    public static Map<String,StockInfo> stocksDetails = new HashMap<String, StockInfo>();
+    
     private String [] header;
 
     public StocksDB( String csvFile )  {
 
-        FileReader fileRead=null; 
         BufferedReader csvRead=null;
         
         String stockRead="";
@@ -68,6 +68,10 @@ public class StocksDB{
         return key.getPrice();
     }
 
+    public static void setPrice( String symbol, Float price, String client ) {
+        stocksDetails.get(symbol).setPrice(price);;
+    }
+
 }
 
 class StockInfo{
@@ -87,4 +91,7 @@ class StockInfo{
         return stockPrice;
     }
 
+    public void setPrice( float price ) {
+        stockPrice = price;
+    }
 }  
