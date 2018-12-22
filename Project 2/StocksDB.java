@@ -1,7 +1,5 @@
 import java.io.*;
 import java.util.*;
-import java.text.SimpleDateFormat;  
-
 
 public class StocksDB{
     public static Map<String,StockInfo> stocksDetails = new HashMap<String, StockInfo>();

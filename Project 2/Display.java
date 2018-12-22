@@ -1,18 +1,11 @@
 import java.awt.*;
 import javax.swing.Timer;
-
-import javafx.scene.control.Label;
-
 import java.text.*;
 import java.awt.BorderLayout;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import java.awt.*;
-import java.awt.event.*;
 import javax.swing.*;
 import java.util.*;
-import java.io.IOException;
-
 
 public class Display extends JPanel implements ActionListener {
 
@@ -130,7 +123,7 @@ public class Display extends JPanel implements ActionListener {
         String timeStamp;
         for( Client s: MainServer.clientList ){
             timeStamp = new SimpleDateFormat("EEE, MMM d, yyyy 'at' h:mm a").format(Calendar.getInstance().getTime()); //get system time and date
-            if(s.newbid){
+            if(s.newBidState){
                 StocksDB.setBidLog( s.clientName, s.symbol, s.bidPrice, timeStamp );
                 textArea.append(timeStamp + " : " + s.clientName + " set a Bid of "+ Price( s.symbol ) +" on "+ s.symbol  +".\n");
                 textArea.setCaretPosition(textArea.getDocument().getLength());
@@ -141,7 +134,7 @@ public class Display extends JPanel implements ActionListener {
                         setSymbolLogs(j,s.symbol);   
                     }
                 }
-                s.newbid=false;
+                s.newBidState=false;
             }          
 
         }

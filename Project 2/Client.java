@@ -11,16 +11,15 @@ class Client implements Runnable, ActionListener{
     public static final int GET_SYMBOL = 1;
     public static final int GET_BID_PRICE = 2;
 
-    private PrintWriter out;
+    //private PrintWriter out;
     private Socket connectedSocket; 
-    private StocksDB stocks;
     private int currentState;
     public float bidPrice;
     public String  clientName;
     public String symbol=null;
     private Timer timer;
-    private int logLength=0;
-    public boolean newbid=false;
+    //private int logLength=0;
+    public boolean newBidState=false;
 
     public void actionPerformed(ActionEvent e) {
         
@@ -80,7 +79,7 @@ class Client implements Runnable, ActionListener{
                         bidPrice = Float.parseFloat(line);
 
                         if( bidPrice > getStockPrice( symbol) ){
-                            newbid = true;
+                            newBidState = true;
                             StocksDB.setPrice(symbol, bidPrice, clientName);
                             out.print("You set a bid of " + bidPrice + " on "+ symbol + ".");
                             out.print("\nEnter Your new bid "+ symbol +": ");
