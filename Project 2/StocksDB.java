@@ -104,6 +104,10 @@ class StockLog {
     public String details(){
         return  BIDprice + " Set by "+ clientName + " at " + BIDtime+"\n";
     }
+
+    public String clientUpdate(){
+        return "New Bid is set by "+clientName+". Current Price: "+BIDprice;
+    }
 }
 
 class StockInfo{

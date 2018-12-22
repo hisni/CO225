@@ -119,7 +119,6 @@ public class Display extends JPanel implements ActionListener {
     }
 
     public void actionPerformed(ActionEvent e) {
-
         String timeStamp;
         for( Client s: MainServer.clientList ){
             timeStamp = new SimpleDateFormat("EEE, MMM d, yyyy 'at' h:mm a").format(Calendar.getInstance().getTime()); //get system time and date
@@ -136,7 +135,6 @@ public class Display extends JPanel implements ActionListener {
                 }
                 s.newBidState=false;
             }          
-
         }
 
         if( e.getSource() instanceof JButton ) {
@@ -148,18 +146,14 @@ public class Display extends JPanel implements ActionListener {
                 }
             }
         }
-
-
     }
 
     public void setSymbolLogs(int k, String symbol ) {
-
         int length = StocksDB.stockLog.get( symbol ).size();
         BidLog[k] = new ArrayList<>();
         for(int i =0; i< length;i++){
             BidLog[k].add(StocksDB.stockLog.get(symbol).get(i).details());
         }
-
     }
 
     public String SecurityName( String key ){

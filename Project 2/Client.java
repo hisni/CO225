@@ -11,22 +11,30 @@ class Client implements Runnable, ActionListener{
     public static final int GET_SYMBOL = 1;
     public static final int GET_BID_PRICE = 2;
 
-    //private PrintWriter out;
+    private PrintWriter out;
     private Socket connectedSocket; 
     private int currentState;
     public float bidPrice;
     public String  clientName;
     public String symbol=null;
     private Timer timer;
-    //private int logLength=0;
+    private int logLength=0;
     public boolean newBidState=false;
 
     public void actionPerformed(ActionEvent e) {
         
-        //if( e.getSource() )
-        //logLength = StocksDB.stockLog.get(symbol).size();
-        //out.print("\nHello "+ logLength + "\n");
-        //out.flush();
+        if( StocksDB.stockLog.get( symbol )!=null ) {
+            int newLogLength = StocksDB.stockLog.get(symbol).size();
+            
+            if ( newLogLength > 0 ){
+                StockLog SL = StocksDB.stockLog.get(symbol).get(newLogLength - 1);
+                if ( newLogLength > logLength &&  clientName != SL.clientName ) {
+                    logLength = newLogLength;
+                    out.print( "\n\n"+SL.clientUpdate()+"\n\nYour new Bid: " );
+                    out.flush();
+                }
+            }
+        }
         
     }
 
@@ -44,14 +52,15 @@ class Client implements Runnable, ActionListener{
 		try {
 
             BufferedReader in = new BufferedReader(new InputStreamReader(this.connectedSocket.getInputStream()));
-		    PrintWriter out = new PrintWriter(new OutputStreamWriter(this.connectedSocket.getOutputStream()));
+            PrintWriter out = new PrintWriter(new OutputStreamWriter(this.connectedSocket.getOutputStream()));
+            this.out = out;
 		    String line; 
             out.print("WELCOME TO AUCTION SERVER\n");
             out.print("\nEnter Client Name : ");
             out.flush();
             currentState = AUTH_NAME;
 
-            for(line = in.readLine(); line != null && !line.equals("quit"); line = in.readLine()) {
+            for(line = in.readLine(); line != null && !line.equalsIgnoreCase("quit"); line = in.readLine()) {
                 switch (currentState) {
                     case AUTH_NAME:
                         clientName = line;
@@ -62,19 +71,24 @@ class Client implements Runnable, ActionListener{
                     case GET_SYMBOL :
                         symbol = line;
                         if ( StocksDB.stocksDetails.containsKey(symbol) ){
+                            if( StocksDB.stockLog.get(symbol)!=null ){
+                                logLength = StocksDB.stockLog.get(symbol).size();
+                            }
                             currentState = GET_BID_PRICE;
-                            out.print("\nBidding Item :"+symbol + "\nCurrent price is "+ getStockPrice(symbol));
+                            out.print("\nBidding Item :"+symbol + "\nCurrent price is "+ getStockPrice(symbol)+"\n");
                             out.print("\nEnter Your bid: ");
                         
                         }
                         else{
                             currentState = GET_SYMBOL;
-                            out.print("Security Symbol does not exists, Enter a valid Symbol.\n");
+                            out.print("Security Symbol does not exists, Enter a valid Symbol.\nEnter the Symbol of Bidding item : ");
                         }
                         break;
 
                     case GET_BID_PRICE:
-                        
+                        if( StocksDB.stockLog.get(symbol)!=null ){
+                            logLength = StocksDB.stockLog.get(symbol).size();
+                        }
                         currentState = GET_BID_PRICE;
                         bidPrice = Float.parseFloat(line);
 
@@ -82,7 +96,8 @@ class Client implements Runnable, ActionListener{
                             newBidState = true;
                             StocksDB.setPrice(symbol, bidPrice, clientName);
                             out.print("You set a bid of " + bidPrice + " on "+ symbol + ".");
-                            out.print("\nEnter Your new bid "+ symbol +": ");
+                            out.print("\nCurrent price is "+ getStockPrice(symbol));
+                            out.print("\nEnter Your new bid on "+ symbol +": ");
                         }
                         else{
                             out.print("Your Bid is not accepted. Bid higher than " + getStockPrice(symbol) + " on "+ symbol + "." );
