@@ -56,7 +56,6 @@ class Client implements Runnable, ActionListener{
 
     public void run(){
 		try {
-
             BufferedReader in = new BufferedReader(new InputStreamReader(this.connectedSocket.getInputStream()));   //To get input stream
             PrintWriter out = new PrintWriter(new OutputStreamWriter(this.connectedSocket.getOutputStream()));      //To give output stream
             this.out = out;
