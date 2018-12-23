@@ -1,3 +1,8 @@
+/*
+    Group Project | Auction Server
+    E/15/131 | E/15/348
+    Group No : 10
+*/
 import java.awt.*;
 import javax.swing.Timer;
 import java.text.*;

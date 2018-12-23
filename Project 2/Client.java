@@ -1,3 +1,8 @@
+/*
+    Group Project | Auction Server
+    E/15/131 | E/15/348
+    Group No : 10
+*/
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -27,11 +32,13 @@ class Client implements Runnable, ActionListener{
             int newLogLength = StocksDB.stockLog.get(symbol).size();
             
             if ( newLogLength > 0 ){
-                StockLog SL = StocksDB.stockLog.get(symbol).get(newLogLength - 1);
-                if ( newLogLength > logLength &&  clientName != SL.clientName ) {
-                    logLength = newLogLength;
-                    out.print( "\n\n"+SL.clientUpdate()+"\n\nYour new Bid: " );
-                    out.flush();
+                for( int i=logLength ; i<newLogLength ; i++ ){
+                    StockLog SL = StocksDB.stockLog.get(symbol).get( i );
+                    if ( newLogLength > logLength &&  clientName != SL.clientName ) {
+                        logLength = newLogLength;
+                        out.print( "\n\n"+SL.clientUpdate()+"\n\nYour new Bid: " );
+                        out.flush();
+                    }
                 }
             }
         }

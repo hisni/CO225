@@ -1,10 +1,14 @@
+/*
+    Group Project | Auction Server
+    E/15/131 | E/15/348
+    Group No : 10
+*/
 import java.io.*;
 import java.util.*;
 
 public class StocksDB{
-    public static Map<String,StockInfo> stocksDetails = new HashMap<String, StockInfo>();
-    public static Map<String, ArrayList<StockLog>> stockLog = new HashMap<>();
-
+    public static Map<String,StockInfo> stocksDetails = new HashMap<String, StockInfo>();   //HashMap to Store Stock items and their details
+    public static Map<String, ArrayList<StockLog>> stockLog = new HashMap<>();              //HashMap to Store Bidding History
     private String [] header;
 
     public StocksDB( String csvFile )  {
@@ -15,19 +19,19 @@ public class StocksDB{
         String [] splitStockInfo;
 
         try { 
-            csvRead = new BufferedReader( new FileReader( csvFile ) );
+            csvRead = new BufferedReader( new FileReader( csvFile ) );      //Reading *.CSV file
 
-            header = csvRead.readLine().split(",");
-            int IndexSymbol = findIndex("Symbol");
-	        int IndexName = findIndex("Security Name");
-            int IndexPrice = findIndex("Price");
+            header = csvRead.readLine().split(",");         //Reading the first line which has the names of fields and identifying them
+            int IndexSymbol = findIndex("Symbol");          //Find the Index of Field - Symbol
+	        int IndexName = findIndex("Security Name");     //Find the Index of Field - Security Name
+            int IndexPrice = findIndex("Price");            //Find the Index of Field - Price
             
-            while( (stockRead = csvRead.readLine()) != null ){
+            while( (stockRead = csvRead.readLine()) != null ){      //Read next line, split and adding to HashMap
                 splitStockInfo = stockRead.split(","); 
                 stocksDetails.put( splitStockInfo[IndexSymbol], new StockInfo(splitStockInfo[IndexName], Float.parseFloat(splitStockInfo[IndexPrice]) ) );
             }
 
-        }catch (FileNotFoundException e) {
+        }catch (FileNotFoundException e) {      //Handling Exceptions
             e.printStackTrace();
             System.exit(-1);
         } catch (IOException e) {
@@ -45,7 +49,7 @@ public class StocksDB{
 
     }
 
-    private int findIndex( String key ){
+    private int findIndex( String key ){        //Method to identify Index of a given Feild Nmae from the the First line of *.CSV file
         for(int i=0; i < header.length; i++){
             if( header[i].equalsIgnoreCase(key) ){
                 return i;
@@ -54,26 +58,26 @@ public class StocksDB{
         return -1;
     }
 
-    public void printStock( ) {
+    public void printStock( ) {         //Method to print All the Stock items and their Details
         for( Map.Entry< String, StockInfo > entry : stocksDetails.entrySet() ){
             String key = entry.getKey();
-            System.out.println( key + " " + getSecurityName(entry.getValue()) + " " + stockPrice(entry.getValue()) );
+            System.out.println( key + " " + getSecurityName(key) + " " + stockPrice(key) );
         }
     }
 
-    public String getSecurityName( StockInfo key ){
-        return key.getName();
-    }
-
-    public float stockPrice( StockInfo key ){
-        return key.getPrice();
-    }
-
-    public static void setPrice( String symbol, Float price, String client ) {
+    public static void setPrice( String symbol, Float price, String client ) { //Method to update current stock price
         stocksDetails.get(symbol).setPrice(price);
     }
 
-    public static void setBidLog(String client, String symbol, Float Price, String time  ){
+    public String getSecurityName( String key ){     //Method To get Security Name 
+        return StocksDB.stocksDetails.get(key).getName();
+    }
+
+    public float stockPrice( String key ){          //Method To get Stock Price
+        return StocksDB.stocksDetails.get(key).getPrice();
+    }
+
+    public static void setBidLog(String client, String symbol, Float Price, String time  ){ //Method to Store Bidding History
 
         StockLog log = new StockLog(client, symbol, Price, time );
         if ( stockLog.containsKey(symbol) ) {
@@ -88,7 +92,7 @@ public class StocksDB{
 
 }
 
-class StockLog {
+class StockLog {            //Object to Maintain the Bidding History
     String clientName;
     String BIDtime="";
     String BIDsymbol;
@@ -101,16 +105,16 @@ class StockLog {
         BIDprice = price;
     }
 
-    public String details(){
+    public String details(){        //Method to return Bidding History in specific String Format for display in GUI
         return  BIDprice + " Set by "+ clientName + " at " + BIDtime+"\n";
     }
 
-    public String clientUpdate(){
+    public String clientUpdate(){   //Method to return Bidding History in specific String Format for notify clients
         return "New Bid is set by "+clientName+". Current Price: "+BIDprice;
     }
 }
 
-class StockInfo{
+class StockInfo{        //Object to Maintain Details about a Stock Item 
     private String SecurityName;
     private float stockPrice;
 
