@@ -12,27 +12,27 @@ import java.io.*;
 
 class Client implements Runnable, ActionListener{
 
-    public static final int AUTH_NAME = 0;
-    public static final int GET_SYMBOL = 1;
-    public static final int GET_BID_PRICE = 2;
+    public static final int AUTH_NAME = 0;      //Initial case for get Clients' Name
+    public static final int GET_SYMBOL = 1;     //Case for get the symbol
+    public static final int GET_BID_PRICE = 2;  //Case for get the bid amount
 
     private PrintWriter out;
-    private Socket connectedSocket; 
-    private int currentState;
-    public float bidPrice;
-    public String  clientName;
-    public String symbol=null;
-    private Timer timer;
-    private int logLength=0;
-    public boolean newBidState=false;
+    private Socket connectedSocket;     //Connected socket unique to each thread
+    private int currentState;           //Variable to switch between states    
+    public float bidPrice;              //Variable get bid amount
+    public String  clientName;          //Variable get client name
+    public String symbol=null;          //Variable get symbol
+    private Timer timer;                //Timer to create an action event
+    private int logLength=0;            //Length of the bid History arraylist
+    public boolean newBidState=false;   //Variable to track whether a new bid is made or not
 
     public void actionPerformed(ActionEvent e) {
-        
-        if( StocksDB.stockLog.get( symbol )!=null ) {
+        //Check whether someone has made a new Bid on current Symbol
+        //If so notify others who are bidding on same symbol about the bid.
+        if( StocksDB.stockLog.get( symbol ) != null ) {
             int newLogLength = StocksDB.stockLog.get(symbol).size();
-            
             if ( newLogLength > 0 ){
-                for( int i=logLength ; i<newLogLength ; i++ ){
+                for( int i=logLength ; i<newLogLength ; i++ ){                      //Notify All the new Bids
                     StockLog SL = StocksDB.stockLog.get(symbol).get( i );
                     if ( newLogLength > logLength &&  clientName != SL.clientName ) {
                         logLength = newLogLength;
@@ -42,71 +42,72 @@ class Client implements Runnable, ActionListener{
                 }
             }
         }
-        
     }
 
-    public Client( Socket socket) { 
+    public Client( Socket socket) {     //Constructor
 		connectedSocket = socket;
-        timer = new Timer(500, this);
-        timer.start();
+        timer = new Timer(500, this);   //Create Timer and assign current ActionListener
+        timer.start();                  //Start timer
     }
 
-    public float getStockPrice( String key ){
-        return StocksDB.stocksDetails.get(key).getPrice();
+    public float getStockPrice( String key ){       //Method to Retrive Current Stock Price
+        return StocksDB.stockPrice(key);
     }
 
     public void run(){
 		try {
 
-            BufferedReader in = new BufferedReader(new InputStreamReader(this.connectedSocket.getInputStream()));
-            PrintWriter out = new PrintWriter(new OutputStreamWriter(this.connectedSocket.getOutputStream()));
+            BufferedReader in = new BufferedReader(new InputStreamReader(this.connectedSocket.getInputStream()));   //To get input stream
+            PrintWriter out = new PrintWriter(new OutputStreamWriter(this.connectedSocket.getOutputStream()));      //To give output stream
             this.out = out;
 		    String line; 
-            out.print("WELCOME TO AUCTION SERVER\n");
+            out.print("\nWELCOME TO AUCTION SERVER\n");
+            out.print("(Enter 'quit' to exit)\n");
             out.print("\nEnter Client Name : ");
             out.flush();
             currentState = AUTH_NAME;
-
+            
+            //Read inputs from the user
             for(line = in.readLine(); line != null && !line.equalsIgnoreCase("quit"); line = in.readLine()) {
-                switch (currentState) {
-                    case AUTH_NAME:
+                switch (currentState) {                 //Switch between states
+                    case AUTH_NAME:                     //Intial Case to get Client Name
                         clientName = line;
                         out.print("Enter the Symbol of Bidding item : ");
                         currentState = GET_SYMBOL;
                         break;
 
-                    case GET_SYMBOL :
+                    case GET_SYMBOL :                   //Case to get Symbol
                         symbol = line;
-                        if ( StocksDB.stocksDetails.containsKey(symbol) ){
+                        if ( StocksDB.stocksDetails.containsKey(symbol) ){      //Check whether symbol is in StocksDB
                             if( StocksDB.stockLog.get(symbol)!=null ){
                                 logLength = StocksDB.stockLog.get(symbol).size();
                             }
-                            currentState = GET_BID_PRICE;
+                            currentState = GET_BID_PRICE;                       //If valid change state to get Bid amount
                             out.print("\nBidding Item :"+symbol + "\nCurrent price is "+ getStockPrice(symbol)+"\n");
                             out.print("\nEnter Your bid: ");
                         
                         }
-                        else{
+                        else{                           //If not valid symbol Ask for Valid symbol
                             currentState = GET_SYMBOL;
                             out.print("Security Symbol does not exists, Enter a valid Symbol.\nEnter the Symbol of Bidding item : ");
                         }
                         break;
 
-                    case GET_BID_PRICE:
+                    case GET_BID_PRICE:                 //Case to get bid amount
                         if( StocksDB.stockLog.get(symbol)!=null ){
                             logLength = StocksDB.stockLog.get(symbol).size();
                         }
                         currentState = GET_BID_PRICE;
                         bidPrice = Float.parseFloat(line);
 
-                        if( bidPrice > getStockPrice( symbol) ){
-                            newBidState = true;
+                        if( bidPrice > getStockPrice( symbol) ){        //Check bidPrice is valid i.e greater than current price
+                            newBidState = true;                         //If Valid update Currnt price
                             StocksDB.setPrice(symbol, bidPrice, clientName);
                             out.print("You set a bid of " + bidPrice + " on "+ symbol + ".");
                             out.print("\nCurrent price is "+ getStockPrice(symbol));
                             out.print("\nEnter Your new bid on "+ symbol +": ");
                         }
-                        else{
+                        else{                                           //If not valid ask for new Bid higher than current price
                             out.print("Your Bid is not accepted. Bid higher than " + getStockPrice(symbol) + " on "+ symbol + "." );
                             out.print("\nEnter Your new bid on "+ symbol +": ");
                         }

@@ -69,11 +69,11 @@ public class StocksDB{
         stocksDetails.get(symbol).setPrice(price);
     }
 
-    public String getSecurityName( String key ){     //Method To get Security Name 
+    public static String getSecurityName( String key ){     //Method To get Security Name 
         return StocksDB.stocksDetails.get(key).getName();
     }
 
-    public float stockPrice( String key ){          //Method To get Stock Price
+    public static float stockPrice( String key ){          //Method To get Stock Price
         return StocksDB.stocksDetails.get(key).getPrice();
     }
 
