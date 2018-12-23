@@ -106,11 +106,11 @@ class StockLog {            //Object to Maintain the Bidding History
     }
 
     public String details(){        //Method to return Bidding History in specific String Format for display in GUI
-        return  "Bid: "+BIDprice + " Set by "+ clientName + " at " + BIDtime+"\n";
+        return  "Bid: "+BIDprice + " placed by "+ clientName + " at " + BIDtime+"\n";
     }
 
     public String clientUpdate(){   //Method to return Bidding History in specific String Format for notify clients
-        return "New Bid is set by "+clientName+". Current Price: "+BIDprice;
+        return "New Bid is placed by "+clientName+". Current Price: "+BIDprice;
     }
 }
 

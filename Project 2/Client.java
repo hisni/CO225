@@ -103,7 +103,7 @@ class Client implements Runnable, ActionListener{
                         if( bidPrice > getStockPrice( symbol) ){        //Check bidPrice is valid i.e greater than current price
                             newBidState = true;                         //If Valid update Currnt price
                             StocksDB.setPrice(symbol, bidPrice, clientName);
-                            out.print("You set a bid of " + bidPrice + " on "+ symbol + ".");
+                            out.print("You placed a bid of " + bidPrice + " on "+ symbol + ".");
                             out.print("\nCurrent price is "+ getStockPrice(symbol));
                             out.print("\nEnter Your new bid on "+ symbol +": ");
                         }

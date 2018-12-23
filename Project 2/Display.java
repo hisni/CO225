@@ -130,7 +130,7 @@ public class Display extends JPanel implements ActionListener {
             timeStamp = new SimpleDateFormat("EEE, MMM d, yyyy 'at' h:mm a").format(Calendar.getInstance().getTime()); //get system time and date
             if(s.newBidState){                      //If a new Bid is placed
                 StocksDB.setBidLog( s.clientName, s.symbol, s.bidPrice, timeStamp );        //Updating History
-                textArea.append(timeStamp + " : " + s.clientName + " set a Bid of "+ Price( s.symbol ) +" on "+ s.symbol  +".\n");      //Updating text area
+                textArea.append(timeStamp + " : " + s.clientName + " placed a Bid of "+ Price( s.symbol ) +" on "+ s.symbol  +".\n");      //Updating text area
                 textArea.setCaretPosition(textArea.getDocument().getLength());
     
                 for( int j=0; j<8; j++ ){       //Updating Current price of Bid Item when new bid is placed
