@@ -14,6 +14,7 @@ import java.util.*;
 
 public class Display extends JPanel implements ActionListener {
 
+    private static final long serialVersionUID = 1L;
     MainServer server;
     Timer timer ;
     JLabel[] labels;
@@ -24,7 +25,7 @@ public class Display extends JPanel implements ActionListener {
     JPanel display;
     JPanel bidHistory;
 
-    ArrayList<String>[] BidLog = new ArrayList[8];
+    Map<Integer, ArrayList<String>> BidLog = new HashMap<>();
     
     class Label{
 	    JLabel jlabel;
@@ -56,7 +57,8 @@ public class Display extends JPanel implements ActionListener {
         super(new BorderLayout());
 
         for (int i=0;i<8 ;i++ ) {
-            BidLog[i] = new ArrayList<>();
+            ArrayList<String> list = new ArrayList<>();
+            BidLog.put(i, list);
         }
 
         this.server = server;
@@ -147,7 +149,7 @@ public class Display extends JPanel implements ActionListener {
 
             for( int i = 0; i<8; i++){   
                 if( buttonSymbol.equals( label[3*i].jlabel.getText() ) ){
-                    JOptionPane.showMessageDialog(null, BidLog[i]+"\n" , "All Bids for " + buttonSymbol, JOptionPane.PLAIN_MESSAGE);
+                    JOptionPane.showMessageDialog(null, BidLog.get(i)+"\n" , "All Bids for " + buttonSymbol, JOptionPane.PLAIN_MESSAGE);
                 }
             }
         }
@@ -155,9 +157,11 @@ public class Display extends JPanel implements ActionListener {
 
     public void setSymbolLogs(int k, String symbol ) {
         int length = StocksDB.stockLog.get( symbol ).size();
-        BidLog[k] = new ArrayList<>();
+        ArrayList<String> list = new ArrayList<>();
+        BidLog.put(k, list);
+        
         for(int i =0; i< length;i++){
-            BidLog[k].add(StocksDB.stockLog.get(symbol).get(i).details());
+            BidLog.get(k).add(StocksDB.stockLog.get(symbol).get(i).details());
         }
     }
 
