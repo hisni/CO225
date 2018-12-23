@@ -8,9 +8,9 @@ Then client can start Bidding.
 The world "quit" can be entered(without quotes) at any point in the program to exit it.
 
 In GUI there are 4 columns which includes 'Symbol', 'Security Name' , 'Current price' and 'Show Bid History'.
-'Price' column includes current price and it gets updated when new bid is made and also updated in every 500ms
+'Price' column includes current price and it gets updated when new bid is placed and also updated in every 500ms
 
 'Show Bid History' Column includes buttons.
-By Clicking the button can view all valid bids made on symbol that is corresponds to the button in a new window, 
+By Clicking the button can view all valid bids placed on symbol that is corresponds to the button in a new window, 
 
-Text area below the table displays all the bid History on all the symbols. It gets updated when a valid bid is made.
+Text area below the table displays all the bid History of all the symbols. It gets updated when a valid bid is placed.

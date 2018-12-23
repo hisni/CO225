@@ -24,10 +24,10 @@ class Client implements Runnable, ActionListener{
     public String symbol=null;          //Variable get symbol
     private Timer timer;                //Timer to create an action event
     private int logLength=0;            //Length of the bid History arraylist
-    public boolean newBidState=false;   //Variable to track whether a new bid is made or not
+    public boolean newBidState=false;   //Variable to track whether a new bid is placed or not
 
     public void actionPerformed(ActionEvent e) {
-        //Check whether someone has made a new Bid on current Symbol
+        //Check whether someone has placed a new Bid on current Symbol
         //If so notify others who are bidding on same symbol about the bid.
         if( StocksDB.stockLog.get( symbol ) != null ) {
             int newLogLength = StocksDB.stockLog.get(symbol).size();
@@ -88,7 +88,8 @@ class Client implements Runnable, ActionListener{
                         }
                         else{                           //If not valid symbol Ask for Valid symbol
                             currentState = GET_SYMBOL;
-                            out.print("Security Symbol does not exists, Enter a valid Symbol.\nEnter the Symbol of Bidding item : ");
+                            //out.print("Security Symbol does not exists, Enter a valid Symbol.\nEnter the Symbol of Bidding item : ");
+                            out.print("-1\nEnter the Symbol of Bidding item : ");
                         }
                         break;
 

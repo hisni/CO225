@@ -21,7 +21,7 @@ public class Display extends JPanel implements ActionListener {
     Label [] label;
     JButton[] showButton;
     Button[] button;                //Buttons to Display Bid history of a symbol
-    JTextArea textArea;             //Text area to dispaly all bids made
+    JTextArea textArea;             //Text area to dispaly all bids placed
     JPanel display;
     JPanel bidHistory;
 
@@ -119,21 +119,21 @@ public class Display extends JPanel implements ActionListener {
         label[ (i-1)*3 + 2 ] = new Label( labels[3*i+3], display, Price(symbol) );
  		labels[3*i+3] = label[ (i-1)*3 +2 ].jlabel;
          
-        button[i-1] = new Button( showButton[i-1], display, symbol );       //Button for display Bids made on a symbol 
+        button[i-1] = new Button( showButton[i-1], display, symbol );       //Button for display Bids placed on a symbol 
         showButton[i-1] = button[i-1].jbutton;
     }
 
     public void actionPerformed(ActionEvent e) {
-        //When a new bid is made update the current price, update the bid history and update the text area. Checks in every 500ms
+        //When a new bid is placed update the current price, update the bid history and update the text area. Checks in every 500ms
         String timeStamp;
         for( Client s: MainServer.clientList ){     //Checks all the clients for new bids
             timeStamp = new SimpleDateFormat("EEE, MMM d, yyyy 'at' h:mm a").format(Calendar.getInstance().getTime()); //get system time and date
-            if(s.newBidState){                      //If a new Bid is made
+            if(s.newBidState){                      //If a new Bid is placed
                 StocksDB.setBidLog( s.clientName, s.symbol, s.bidPrice, timeStamp );        //Updating History
                 textArea.append(timeStamp + " : " + s.clientName + " set a Bid of "+ Price( s.symbol ) +" on "+ s.symbol  +".\n");      //Updating text area
                 textArea.setCaretPosition(textArea.getDocument().getLength());
     
-                for( int j=0; j<8; j++ ){       //Updating Current price of Bid Item when new bid is made
+                for( int j=0; j<8; j++ ){       //Updating Current price of Bid Item when new bid is placed
                     if( s.symbol.equals( label[3*j].jlabel.getText() ) ){
                         labels[ (j+2)*3 ].setText( Price(s.symbol) ); 
                         setSymbolLogs(j,s.symbol);   
@@ -143,12 +143,18 @@ public class Display extends JPanel implements ActionListener {
             }          
         }
 
-        //When a button is clicked display all the bids made on Symbol corresponds to the button
+        //When a button is clicked display all the bids placed on Symbol corresponds to the button
         if( e.getSource() instanceof JButton ) {
             String buttonSymbol = ((JButton)e.getSource()).getText();
             for( int i = 0; i<8; i++){   
                 if( buttonSymbol.equals( label[3*i].jlabel.getText() ) ){
-                    JOptionPane.showMessageDialog(null, BidLog.get(i)+"\n" , "All Bids for " + buttonSymbol, JOptionPane.PLAIN_MESSAGE);
+                    if( BidLog.get(i).isEmpty() ){
+                        JOptionPane.showMessageDialog(null, "No Bids have been placed" , "All Bids for " + buttonSymbol, JOptionPane.PLAIN_MESSAGE);    
+                    }
+                    else{
+                        JOptionPane.showMessageDialog(null, BidLog.get(i)+"\n" , "All Bids for " + buttonSymbol, JOptionPane.PLAIN_MESSAGE);
+                    }
+                    
                 }
             }
         }
