@@ -1,3 +1,7 @@
+/*
+    Lab 05 | TicTacToe Game
+    E/15/131
+*/
 import javax.swing.JFrame;
 import javax.swing.JButton;
 import javax.swing.GroupLayout;
@@ -11,28 +15,29 @@ public class Display extends JFrame{
     public JButton reset;
     public JLabel label;
 
-    public Display(){
-        setBoard();
+    public Display(){       //Constructor
+        setBoard();         //Set the playing Board
         setVisible(true);
         pack();
         setTitle("Tic-Tac-Toe Game");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);   
     }
 
+    //Method to set the Playing Board with buttons and label
     private void setBoard(){
-        button = new JButton[9];    
-		
+        button = new JButton[9];                    //9 Buttons for game play
 		for (int i=0; i<this.button.length; i++){
 			button[i] = new JButton("");
         }
         
-		label = new JLabel("Player 1s' turn");
-		reset = new JButton("Play Again");
+		label = new JLabel("Player 1s' turn");      //Label to Display which players turn
+		reset = new JButton("Play Again");          //Button to reset the game after a result is achieved
         reset.setEnabled(false);
 
+        //Adding the Buttons to display and grouping it togather and formating
+        //Setting Button Sizes and formating the gaps between buttons
         GroupLayout border = new GroupLayout(getContentPane());
         getContentPane().setLayout(border);
-        
         border.setAutoCreateGaps(true);
         border.setAutoCreateContainerGaps(true);
 
@@ -76,18 +81,20 @@ public class Display extends JFrame{
         
     }
 
+    //Method to display the result when a player is won
     public void showResult( String player ){
         label.setText( "Player "+ player + " Won" );
-        JOptionPane.showMessageDialog( this, "Congratulations Player "+ player + " WON","Game Result",JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog( this, "Congratulations Player "+ player + " wins!","Game Result",JOptionPane.INFORMATION_MESSAGE);
         for(JButton jButton : this.button){
             jButton.setEnabled(false);
         }
         reset.setEnabled(true);
     }
 
+    //Method to display the result when game is drawn
     public void showResult(){
         label.setText( "Game Draw" );
-        JOptionPane.showMessageDialog(this,"Draw","Game Result",JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(this,"The game is draw","Game Result",JOptionPane.INFORMATION_MESSAGE);
         reset.setEnabled(true);
     }
 
