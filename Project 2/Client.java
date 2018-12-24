@@ -65,9 +65,12 @@ class Client implements Runnable, ActionListener{
             out.print("\nEnter Client Name : ");
             out.flush();
             currentState = AUTH_NAME;
-            
+
             //Read inputs from the user
             for(line = in.readLine(); line != null && !line.equalsIgnoreCase("quit"); line = in.readLine()) {
+                if( line.equalsIgnoreCase("") ){        //If client enter a empty string continue
+                    continue;
+                }
                 switch (currentState) {                 //Switch between states
                     case AUTH_NAME:                     //Intial Case to get Client Name
                         clientName = line;
@@ -83,7 +86,7 @@ class Client implements Runnable, ActionListener{
                             }
                             currentState = GET_BID_PRICE;                       //If valid change state to get Bid amount
                             out.print("\nBidding Item :"+symbol + "\nCurrent price is "+ getStockPrice(symbol)+"\n");
-                            out.print("\nEnter Your bid: ");
+                            out.print("\nEnter your Bid: ");
                         
                         }
                         else{                           //If not valid symbol Ask for Valid symbol
@@ -94,18 +97,26 @@ class Client implements Runnable, ActionListener{
                         break;
 
                     case GET_BID_PRICE:                 //Case to get bid amount
+                        currentState = GET_BID_PRICE;
                         if( StocksDB.stockLog.get(symbol)!=null ){
                             logLength = StocksDB.stockLog.get(symbol).size();
                         }
-                        currentState = GET_BID_PRICE;
-                        bidPrice = Float.parseFloat(line);
 
+                        try {                           //Check for valid Format of Bid amount 
+                            bidPrice = Float.parseFloat(line);    
+                        }catch (NumberFormatException e) {      //If not ask for a valid Bid
+                            out.println("Invalid Format");
+                            out.print("Enter your new bid: ");
+                            out.flush();
+                            break;
+                        }
+                        
                         if( bidPrice > getStockPrice( symbol) ){        //Check bidPrice is valid i.e greater than current price
                             newBidState = true;                         //If Valid update Currnt price
                             StocksDB.setPrice(symbol, bidPrice, clientName);
                             out.print("You placed a bid of " + bidPrice + " on "+ symbol + ".");
                             out.print("\nCurrent price is "+ getStockPrice(symbol));
-                            out.print("\nEnter Your new bid on "+ symbol +": ");
+                            out.print("\nEnter your new bid on "+ symbol +": ");
                         }
                         else{                                           //If not valid ask for new Bid higher than current price
                             out.print("Your Bid is not accepted. Bid higher than " + getStockPrice(symbol) + " on "+ symbol + "." );
@@ -123,7 +134,9 @@ class Client implements Runnable, ActionListener{
             this.connectedSocket.close();
 
         }catch (IOException e) { 
-		    System.out.println(e); 
+            System.out.println(e); 
+        }catch( NumberFormatException e){
+            System.out.println(e);
 		}finally { 	    
             try{
                 this.connectedSocket.close(); 

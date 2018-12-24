@@ -19,7 +19,7 @@ Instructions for the Server
 Instrucitons for the Clients
 *********************************************************
 
-**The client can use the command line to connect to the server.
+**The client can use the terminal to connect to the server.
 **Connect to the to the server using nc command through port no 2000.
 
 After connecting,
